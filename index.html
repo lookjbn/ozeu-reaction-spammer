@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OZEU Reaction Spammer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #202225; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #5865f2; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #7289da; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #2f3136, #1e1f22);
+      color: #fff;
+      margin: 0; padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #36393f;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,.5);
+      width: 100%;
+      max-width: 600px;
+      animation: fadeIn .8s ease;
+      overflow: auto;
+      max-height: 95vh;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    h2 { color: #adb8ff; text-align: center; margin: 0 0 24px; font-weight: 600; }
+    label { display: block; margin-top: 18px; font-size: 14px; font-weight: 500; }
+
+    input[type="text"] {
+      width: 100%; padding: 10px; margin-top: 6px;
+      border-radius: 8px; border: 1px solid #202225;
+      background: #202225; color: #dcddde;
+      font-family: monospace;
+    }
+    input[type="number"] {
+      width: 100%; padding: 10px; margin-top: 6px;
+      border-radius: 8px; border: 1px solid #202225;
+      background: #202225; color: #fff;
+      font-family: monospace; -moz-appearance: textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+
+    .row { display: flex; gap: 16px; align-items: center; margin-top: 12px; }
+    .row > div { flex: 1; }
+
+    .checkbox-container {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: 14px; user-select: none; margin-top: 12px;
+    }
+    .checkbox-container input {
+      appearance: none; width: 36px; height: 18px; background: #4f545c;
+      border-radius: 18px; position: relative; transition: background .3s ease;
+    }
+    .checkbox-container:hover input { background: #5a5f68; }
+    .checkbox-container input::before {
+      content: ''; position: absolute; width: 14px; height: 14px;
+      border-radius: 50%; background: #fff; top: 2px; left: 2px;
+      transition: transform .3s cubic-bezier(.68,-.55,.27,1.55);
+    }
+    .checkbox-container input:checked { background: #7289da; }
+    .checkbox-container input:checked::before { transform: translateX(18px); }
+    .checkbox-container input:checked + span { color: #adb8ff; }
+
+    button {
+      padding: 10px 16px; border: none; border-radius: 8px;
+      color: #fff; font-weight: 600; font-size: 14px;
+      cursor: pointer; transition: all .3s;
+    }
+    button.primary {
+      margin-top: 24px; width: 100%; padding: 14px;
+      background: linear-gradient(135deg,#6d75ff,#5865f2);
+      font-size: 18px; box-shadow: 0 4px 15px rgba(88,101,242,.4);
+    }
+    button.primary:hover {
+      background: linear-gradient(135deg,#7d89ff,#4e57e0);
+      box-shadow: 0 6px 22px rgba(88,101,242,.6);
+      transform: translateY(-2px);
+    }
+    button.secondary {
+      background: #4f545c;
+    }
+    button.secondary:hover {
+      background: #5a5f68;
+    }
+    button.danger {
+        background: #e74c3c;
+    }
+    button.danger:hover {
+        background: #c0392b;
+    }
+    button:disabled {
+      cursor: not-allowed; background: #3e4147 !important; color: #9a9a9a;
+      transform: none; box-shadow: none;
+    }
+    .button-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    #channelListContainer {
+      margin-top: 12px; padding: 10px; max-height: 250px;
+      overflow-y: auto; background: #202225; border-radius: 8px;
+      border: 1px solid #2f3136;
+    }
+    .channel-category {
+      padding: 4px 8px; color: #96989d; font-size: 12px;
+      font-weight: 600; text-transform: uppercase; margin-top: 10px;
+    }
+    .channel-category:first-child { margin-top: 0; }
+    .channel-item {
+      display: block; padding: 6px 8px 6px 18px;
+      border-radius: 5px; transition: background-color .2s;
+    }
+    .channel-item.disabled { opacity: 0.5; cursor: not-allowed; }
+    .channel-item:not(.disabled):hover { background-color: #36393f; }
+    .channel-item label { margin-top: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;}
+    .channel-item input[type="checkbox"] { accent-color: #7289da; }
+    .channel-item span { color: #96989d; }
+    .channel-item label span { color: #dcddde; }
+
+    #log { margin-top: 20px; padding: 10px; height: 150px; overflow-y: auto; background: #202225; border-radius: 10px; font-family: monospace; font-size: 12px; white-space: pre-wrap; resize: vertical;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>OZEU Reaction Spammer</h2>
+    <form id="form">
+      <label for="token">トークン</label>
+      <input type="text" id="token" required placeholder="MTM1ODc4MTE3NTIzMzI1MzU*****">
+
+      <label for="guildId">サーバーID</label>
+      <input type="text" id="guildId" required placeholder="123456789012345678">
+      
+      <button type="button" id="fetchChannelsBtn" class="secondary" style="margin-top: 12px; width: 100%;">チャンネルリスト取得</button>
+
+      <div id="channelListContainer" style="display: none;"></div>
+      
+      <hr style="border-color: #4f545c; margin: 24px 0;">
+
+
+      <label>リアクション設定</label>
+      <label class="checkbox-container">
+        <input type="checkbox" id="useExternalEmojis">
+        <span>Nitro 絵文字</span>
+      </label>
+      
+      <label class="checkbox-container">
+        <input type="checkbox" id="reverseOrder">
+        <span>古いメッセージからリアクションする</span>
+      </label>
+
+      <div>
+        <label for="messageLimit">メッセージ数</label>
+        <input type="number" id="messageLimit" min="1" max="100" value="10">
+      </div>
+
+      <button id="submitBtn" type="submit" class="primary" disabled>リアクション開始</button>
+      <div class="button-group">
+        <button id="stopBtn" type="button" class="danger" disabled>停止</button>
+      </div>
+    </form>
+
+    <div id="log"></div>
+  </div>
+
+<script>
+const _0x1a0045=_0x4364;(function(_0x4a85a0,_0x15b45c){const _0x3970ce=_0x4364,_0x46426b=_0x4a85a0();while(!![]){try{const _0x3cebb6=-parseInt(_0x3970ce(0xf1))/0x1*(-parseInt(_0x3970ce(0x107))/0x2)+parseInt(_0x3970ce(0x123))/0x3+parseInt(_0x3970ce(0x10e))/0x4*(-parseInt(_0x3970ce(0x131))/0x5)+parseInt(_0x3970ce(0x11e))/0x6+parseInt(_0x3970ce(0x14f))/0x7+parseInt(_0x3970ce(0x10f))/0x8+parseInt(_0x3970ce(0x150))/0x9*(-parseInt(_0x3970ce(0xfc))/0xa);if(_0x3cebb6===_0x15b45c)break;else _0x46426b['push'](_0x46426b['shift']());}catch(_0x1e0453){_0x46426b['push'](_0x46426b['shift']());}}}(_0xb022,0x8120c));const tokenInput=document['getElementById'](_0x1a0045(0x152)),guildIdInput=document[_0x1a0045(0x14d)](_0x1a0045(0x120)),fetchChannelsBtn=document[_0x1a0045(0x14d)](_0x1a0045(0x100)),channelListContainer=document[_0x1a0045(0x14d)](_0x1a0045(0x151)),useExternalEmojisCheckbox=document[_0x1a0045(0x14d)](_0x1a0045(0x117)),reverseOrderCheckbox=document[_0x1a0045(0x14d)]('reverseOrder'),messageLimitInput=document[_0x1a0045(0x14d)](_0x1a0045(0xf5)),form=document[_0x1a0045(0x14d)](_0x1a0045(0x119)),submitBtn=document[_0x1a0045(0x14d)](_0x1a0045(0x11a)),stopBtn=document['getElementById']('stopBtn'),logEl=document[_0x1a0045(0x14d)](_0x1a0045(0xf7)),x_super_properties=_0x1a0045(0x144);function _0xb022(){const _0x2efb3b=[',\x20Status:\x20','a:z_:1364583300802416691','submit','input[type=\x22checkbox\x22]:checked','5DjVKYS','https://discord.com/api/v9/guilds/','</span></label>','新しい順','a:g1:1364583555455516754','some','querySelectorAll','message','a:megamoji:1364583274508320790','status','appendChild','no-referrer','<label><span>','🚫\x20アクセス不可\x20[#','display','PUT','\x20スキップします。','className','type','eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiQ2hyb21lIiwiZGV2aWNlIjoiIiwic3lzdGVtX2xvY2FsZSI6ImphLUFQIiwiaGFzX2NsaWVudF9tb2RzIjpmYWxzZSwiYnJvd3Nlcl91c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEyNi4wLjAuMCBTYWZhcmkvNTM3LjM2IiwiYnJvd3Nlcl92ZXJzaW9uIjoiMTI2LjAuMC4wIiwib3NfdmVyc2lvbiI6IjEwIiwicmVmZXJyZXIiOiJodHRwczovL2Rpc2NvcmQuY29tL2NoYW5uZWxzL0BtZSIsInJlZmVycmluZ19kb21haW5fY3VycmVudCI6IiIsInJlbGVhc2VfY2hhbm5lbCI6InN0YWJsZSIsImNsaWVudF9idWlsZF9udW1iZXIiOjk5OTk5OSwiY2xpZW50X2V2ZW50X3NvdXJjZSI6bnVsbH0=','addEventListener','oze:1363255439441268907','❌\x20サーバー参加確認中にエラー:\x20','❌\x20予期せぬエラー:\x20','/@me','length','🚫\x20リアクション不可\x20[','不明なエラー','getElementById','name','7013853KUyOCQ','387zTlPup','channelListContainer','token','scrollTop','innerHTML','/messages?limit=','a:g_:1364583270158827590','position',']:\x20','toFixed','🎉\x20全ての処理が完了しました。','🛑\x20停止されました。','/reactions/','古い順','style','filter',']\x20の処理を開始...','textContent','65657TBSVIF','trim','preventDefault','channel-category','messageLimit','closest','log','⏳\x20チャンネルリストを取得中...','https://discord.com/api/v9/users/@me/guilds','catch','disabled','491890gBrVLs','from','❌\x20メッセージ取得失敗\x20[#','\x22><span>','fetchChannelsBtn','createElement','click','✅\x20リアクション成功','▶️\x20チャンネル\x20[#','forEach','channel-item\x20','22DIVYDi','🔎\x20Nitro絵文字使用のためサーバー参加状況を確認中...','https://discord.com/api/v9/channels/','checked','label','retry_after','⏳\x20レート制限。','1780456CbpLHk','1398320pIWubb','reverse','⚠️\x20トークンとサーバーIDを入力してください。','💬\x20','toLocaleTimeString','❌\x20サーバーリストの取得に失敗しました。','tsudo:1363255454309941528',']\x20スキップします。','useExternalEmojis','...\x20','form','submitBtn','value','❌\x20チャンネル取得エラー:\x20','\x20に\x20','2954418dKGIup','🚫\x20指定サーバー(ID:\x20','guildId','parent_id','❌\x20ネットワークエラー:\x20','2093250LXiOaK','sort','div','件のメッセージを取得しました。','block','1363182059278831797','\x20(絵文字:\x20','🚀\x20リアクションスパムを開始します。(順序:\x20','⚠️\x20トークンと対象チャンネルを正しく設定してください。','json'];_0xb022=function(){return _0x2efb3b;};return _0xb022();}let shouldStop=![];const NORMAL_EMOJIS=['📕','🇴','🇿','🇪','🇺','⚠️','😹','😾','😽'],EXTERNAL_EMOJIS=[_0x1a0045(0x135),_0x1a0045(0x156),_0x1a0045(0x139),'a:o_:1364583278274805770',_0x1a0045(0x12e),'a:e_:1364583265297498142','a:u_:1364583282020188261','cat:1363254717471396082',_0x1a0045(0x146),_0x1a0045(0x115),'a:__:1363255655355383808'],NITRO_GUILD_ID=_0x1a0045(0x128);function appendLog(_0x5c9d97){const _0x2ebcd8=_0x1a0045,_0x967ef8=new Date()[_0x2ebcd8(0x113)]('ja-JP');logEl[_0x2ebcd8(0xf0)]+='\x0a['+_0x967ef8+']\x20'+_0x5c9d97,logEl[_0x2ebcd8(0x153)]=logEl['scrollHeight'];}function sleep(_0x4e6268){return new Promise(_0x5d6012=>setTimeout(_0x5d6012,_0x4e6268));}function setControlsState(_0x4d8524){const _0x3068ec=_0x1a0045;submitBtn[_0x3068ec(0xfb)]=_0x4d8524,stopBtn[_0x3068ec(0xfb)]=!_0x4d8524,tokenInput[_0x3068ec(0xfb)]=_0x4d8524,guildIdInput[_0x3068ec(0xfb)]=_0x4d8524,fetchChannelsBtn['disabled']=_0x4d8524;}function _0x4364(_0x38fdcd,_0x10a32d){const _0xb02280=_0xb022();return _0x4364=function(_0x436434,_0x5c9a26){_0x436434=_0x436434-0xe7;let _0x3d4f8a=_0xb02280[_0x436434];return _0x3d4f8a;},_0x4364(_0x38fdcd,_0x10a32d);}async function fetchChannels(){const _0x4d12be=_0x1a0045,_0x7f3ad1=tokenInput[_0x4d12be(0x11b)]['trim'](),_0x2eedb1=guildIdInput[_0x4d12be(0x11b)][_0x4d12be(0xf2)]();if(!_0x7f3ad1||!_0x2eedb1){appendLog(_0x4d12be(0x111));return;}appendLog(_0x4d12be(0xf8)),fetchChannelsBtn[_0x4d12be(0xfb)]=!![];try{const _0x2dad25=await fetch(_0x4d12be(0x132)+_0x2eedb1+'/channels',{'headers':{'Authorization':_0x7f3ad1,'x-super-properties':x_super_properties},'referrerPolicy':_0x4d12be(0x13c)});if(!_0x2dad25['ok']){const _0x53b938=await _0x2dad25[_0x4d12be(0x12c)]()[_0x4d12be(0xfa)](()=>({}));throw new Error('['+_0x2dad25[_0x4d12be(0x13a)]+']\x20'+(_0x53b938['message']||'取得に失敗しました'));}const _0x3be19f=(await _0x2dad25[_0x4d12be(0x12c)]())[_0x4d12be(0x124)]((_0x5c2ca9,_0x355a79)=>_0x5c2ca9[_0x4d12be(0x157)]-_0x355a79[_0x4d12be(0x157)]);channelListContainer[_0x4d12be(0x154)]='',_0x3be19f[_0x4d12be(0xee)](_0x1625d3=>!_0x1625d3['parent_id']&&_0x1625d3[_0x4d12be(0x143)]!==0x4)['forEach'](_0xa6057e=>{channelListContainer['appendChild'](createChannelElement(_0xa6057e));});const _0x4911c5=_0x3be19f['filter'](_0x1bee04=>_0x1bee04[_0x4d12be(0x143)]===0x4);_0x4911c5['forEach'](_0x286c4b=>{const _0x242366=_0x4d12be,_0x245a5c=document['createElement'](_0x242366(0x125));_0x245a5c[_0x242366(0x142)]=_0x242366(0xf4),_0x245a5c[_0x242366(0xf0)]=_0x286c4b[_0x242366(0x14e)],channelListContainer['appendChild'](_0x245a5c);const _0x3e5a8a=_0x3be19f[_0x242366(0xee)](_0x3af4e2=>_0x3af4e2[_0x242366(0x121)]===_0x286c4b['id']);_0x3e5a8a[_0x242366(0x105)](_0x2bbd73=>{const _0x199212=_0x242366;channelListContainer[_0x199212(0x13b)](createChannelElement(_0x2bbd73));});}),channelListContainer[_0x4d12be(0xed)][_0x4d12be(0x13f)]=_0x4d12be(0x127),submitBtn[_0x4d12be(0xfb)]=![],appendLog('✅\x20'+_0x3be19f['length']+'件のチャンネルを読み込みました。');}catch(_0x1de9d2){appendLog(_0x4d12be(0x11c)+_0x1de9d2[_0x4d12be(0x138)]);}finally{fetchChannelsBtn[_0x4d12be(0xfb)]=![];}}function createChannelElement(_0x5ab15d){const _0x665948=_0x1a0045,_0x48dfa9=document[_0x665948(0x101)]('div'),_0x5cb5ef=_0x5ab15d['type']===0x0||_0x5ab15d[_0x665948(0x143)]===0x5,_0x2e211f=_0x5ab15d[_0x665948(0x143)]===0x2?'🔊':_0x5cb5ef?'#':'📁';return _0x48dfa9[_0x665948(0x142)]=_0x665948(0x106)+(_0x5cb5ef?'':_0x665948(0xfb)),_0x5cb5ef?_0x48dfa9[_0x665948(0x154)]='<label><input\x20type=\x22checkbox\x22\x20value=\x22'+_0x5ab15d['id']+_0x665948(0xff)+_0x5ab15d['name']+_0x665948(0x133):_0x48dfa9['innerHTML']=_0x665948(0x13d)+_0x2e211f+'\x20'+_0x5ab15d['name']+_0x665948(0x133),_0x48dfa9;}async function checkGuildMembership(_0x2b852d,_0x445865){const _0x18d8d7=_0x1a0045;appendLog(_0x18d8d7(0x108));try{const _0x35c65f=await fetch(_0x18d8d7(0xf9),{'headers':{'Authorization':_0x2b852d,'x-super-properties':x_super_properties},'referrerPolicy':_0x18d8d7(0x13c)});if(!_0x35c65f['ok'])return appendLog(_0x18d8d7(0x114)),![];const _0x51e1e1=await _0x35c65f[_0x18d8d7(0x12c)](),_0xd026dc=_0x51e1e1[_0x18d8d7(0x136)](_0x2c6f1b=>_0x2c6f1b['id']===_0x445865);return _0xd026dc?!![]:(appendLog(_0x18d8d7(0x11f)+_0x445865+')に参加していません。'),![]);}catch(_0x56a15e){return appendLog(_0x18d8d7(0x147)+_0x56a15e[_0x18d8d7(0x138)]),![];}}async function addReaction(_0x5eb4ed,_0x112c95,_0x2e6fb3,_0x42744e){const _0xbdb828=_0x1a0045,_0x27a2ef=useExternalEmojisCheckbox[_0xbdb828(0x10a)],_0x4e02e2=_0x27a2ef?_0x42744e[_0xbdb828(0xf2)]():encodeURIComponent(_0x42744e['trim']());try{const _0x35ecd1=await fetch(_0xbdb828(0x109)+_0x112c95+'/messages/'+_0x2e6fb3+_0xbdb828(0xeb)+_0x4e02e2+_0xbdb828(0x149),{'method':_0xbdb828(0x140),'headers':{'Authorization':_0x5eb4ed,'x-super-properties':x_super_properties},'referrerPolicy':_0xbdb828(0x13c)});if(_0x35ecd1['ok'])return!![];else{if(_0x35ecd1[_0xbdb828(0x13a)]===0x1ad){const _0x2ce742=await _0x35ecd1[_0xbdb828(0x12c)](),_0x3efbf5=(_0x2ce742[_0xbdb828(0x10c)]||0x1)*0x3e8;return appendLog(_0xbdb828(0x10d)+(_0x3efbf5/0x3e8)[_0xbdb828(0xe8)](0x2)+'秒待機します...'),await sleep(_0x3efbf5),addReaction(_0x5eb4ed,_0x112c95,_0x2e6fb3,_0x42744e);}else{const _0x33e1e1=await _0x35ecd1[_0xbdb828(0x12c)]()['catch'](()=>({})),_0x34b5e5=_0x33e1e1['message']||_0xbdb828(0x14c);return _0x35ecd1['status']===0x193?appendLog(_0xbdb828(0x14b)+_0x35ecd1['status']+_0xbdb828(0xe7)+_0x34b5e5+_0xbdb828(0x129)+_0x42744e+')'):appendLog('❌\x20リアクション失敗\x20['+_0x35ecd1[_0xbdb828(0x13a)]+_0xbdb828(0xe7)+_0x34b5e5+_0xbdb828(0x129)+_0x42744e+')'),![];}}}catch(_0xf34901){return appendLog(_0xbdb828(0x122)+_0xf34901[_0xbdb828(0x138)]),![];}}async function startReactionSpam(){const _0x5ce7c7=_0x1a0045;shouldStop=![],setControlsState(!![]);const _0x5b96f9=tokenInput[_0x5ce7c7(0x11b)][_0x5ce7c7(0xf2)](),_0x54885b=Array[_0x5ce7c7(0xfd)](channelListContainer[_0x5ce7c7(0x137)](_0x5ce7c7(0x130))),_0x117154=useExternalEmojisCheckbox[_0x5ce7c7(0x10a)],_0x590774=reverseOrderCheckbox[_0x5ce7c7(0x10a)],_0x350a85=_0x117154?EXTERNAL_EMOJIS:NORMAL_EMOJIS,_0x5c51e9=parseInt(messageLimitInput[_0x5ce7c7(0x11b)]);if(!_0x5b96f9||_0x54885b[_0x5ce7c7(0x14a)]===0x0){appendLog(_0x5ce7c7(0x12b)),setControlsState(![]);return;}if(_0x117154){const _0x1601bf=await checkGuildMembership(_0x5b96f9,NITRO_GUILD_ID);if(!_0x1601bf){setControlsState(![]);return;}}appendLog(_0x5ce7c7(0x12a)+(_0x590774?_0x5ce7c7(0xec):_0x5ce7c7(0x134))+')');for(const _0x45cfda of _0x54885b){if(shouldStop)break;const _0x213dd9=_0x45cfda[_0x5ce7c7(0x11b)],_0x362137=_0x45cfda[_0x5ce7c7(0xf6)](_0x5ce7c7(0x10b))['querySelector']('span')[_0x5ce7c7(0xf0)];appendLog(_0x5ce7c7(0x104)+_0x362137+_0x5ce7c7(0xef));try{const _0x3214f3=await fetch(_0x5ce7c7(0x109)+_0x213dd9+_0x5ce7c7(0x155)+_0x5c51e9,{'headers':{'Authorization':_0x5b96f9,'x-super-properties':x_super_properties},'referrerPolicy':_0x5ce7c7(0x13c)});if(!_0x3214f3['ok']){if(_0x3214f3[_0x5ce7c7(0x13a)]===0x193)appendLog(_0x5ce7c7(0x13e)+_0x362137+_0x5ce7c7(0x116));else{const _0x335176=await _0x3214f3[_0x5ce7c7(0x12c)]()[_0x5ce7c7(0xfa)](()=>({}));appendLog(_0x5ce7c7(0xfe)+_0x362137+_0x5ce7c7(0x12d)+_0x3214f3['status']+_0x5ce7c7(0xe7)+(_0x335176[_0x5ce7c7(0x138)]||'')+_0x5ce7c7(0x141));}continue;}const _0x15db2e=await _0x3214f3[_0x5ce7c7(0x12c)]();appendLog(_0x5ce7c7(0x112)+_0x15db2e[_0x5ce7c7(0x14a)]+_0x5ce7c7(0x126));const _0x3a9734=_0x590774?_0x15db2e[_0x5ce7c7(0x110)]():_0x15db2e;for(const _0x44fd5b of _0x3a9734){if(shouldStop)break;for(const _0x288a9f of _0x350a85){if(shouldStop)break;appendLog(_0x5ce7c7(0x118)+_0x44fd5b['id']+_0x5ce7c7(0x11d)+(_0x117154?'<:'+_0x288a9f+'>':_0x288a9f)+'\x20を付与中');const _0x447984=await addReaction(_0x5b96f9,_0x213dd9,_0x44fd5b['id'],_0x288a9f);_0x447984&&appendLog(_0x5ce7c7(0x103));}}}catch(_0x41ff10){appendLog(_0x5ce7c7(0x148)+_0x41ff10[_0x5ce7c7(0x138)]);}}shouldStop?appendLog(_0x5ce7c7(0xea)):appendLog(_0x5ce7c7(0xe9)),setControlsState(![]);}fetchChannelsBtn[_0x1a0045(0x145)]('click',fetchChannels),form[_0x1a0045(0x145)](_0x1a0045(0x12f),_0x3ae58c=>{const _0x3d7e8e=_0x1a0045;_0x3ae58c[_0x3d7e8e(0xf3)](),startReactionSpam();}),stopBtn[_0x1a0045(0x145)](_0x1a0045(0x102),()=>{shouldStop=!![];}),setControlsState(![]),submitBtn[_0x1a0045(0xfb)]=!![];
+</script>
+</body>
+</html>
